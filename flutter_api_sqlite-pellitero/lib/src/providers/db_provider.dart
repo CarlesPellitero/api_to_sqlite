@@ -88,7 +88,7 @@ class DBProvider {
 
   deleteTodo(String id) async {
     final db = await database;
-    db?.rawDelete('DELETE FROM Heroes where id = ?',[id]); // CAMBIAR HACER QUE BORRE
+    db?.rawDelete('DELETE FROM Heroes where id = ?',[id]); 
     
   }
 

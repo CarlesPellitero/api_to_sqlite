@@ -16,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var isLoading = false;
   var isDone = false;
+  DateTime? lastPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () async {
                 Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => EditPage()));
+              MaterialPageRoute(builder: (context) => const EditPage()));
                   //SALTA A OTRA PAGE
               },
             ),
@@ -144,18 +145,33 @@ class _HomePageState extends State<HomePage> {
 '''
                   'Descripció: ${snapshot.data[index].desc}'),
                   key: ObjectKey(heroes),
-                  // onDismissed: (direction) {
-                  //     DBProvider.db.deleteTodoById(heroes.id.toString()); //ARREGLAR
-                  //   },
-                  //   direction: _dismissDirection,
                   onTap: () async {
-                            //Reverse the value
-                            isDone = !isDone;
-                            await _deleteDataByID(heroes.id.toString());
-                          },
+                    final now = DateTime.now();
+                    const maxDuration = Duration(seconds: 2);
+                    final isWarning = lastPressed == null ||
+                      now.difference(lastPressed!) > maxDuration;
+                    //Reverse the value
+
+                    if (isWarning){
+                      lastPressed = DateTime.now();
+                      
+                      const snackbar = SnackBar(
+                        content: Text('Double Tap To Deleted'),
+                        duration: maxDuration,
+                      );
+
+                      ScaffoldMessenger.of(context)
+                        ..removeCurrentSnackBar()
+                        ..showSnackBar(snackbar);
+
+                        //GUARDAR LOS VALORES 
+                    }else{
+                    isDone = !isDone;
+                    await _deleteDataByID(heroes.id.toString());
+                    }
+                  },
                   
               );
-            
             },
           );
         }
@@ -214,7 +230,7 @@ class _HomePageState extends State<HomePage> {
                               controller: _nom,
                               textInputAction: TextInputAction.newline,
                               maxLines: 4,
-                              style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w400),
+                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
                               autofocus: true,
                               decoration: const InputDecoration(
                                   hintText: 'Escriu',
@@ -234,11 +250,11 @@ class _HomePageState extends State<HomePage> {
                               controller: _tipus,
                               textInputAction: TextInputAction.newline,
                               maxLines: 4,
-                              style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w400),
+                              style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w400),
                               autofocus: true,
                               decoration: const InputDecoration(
                                   hintText: 'Escriu',
-                                  labelText: 'Tipus de Heroe',
+                                  labelText: 'Tipus',
                                   labelStyle: TextStyle(
                                       color:  Color.fromARGB(255, 237, 141, 57),
                                       fontWeight: FontWeight.w500)),
@@ -254,11 +270,11 @@ class _HomePageState extends State<HomePage> {
                               controller: _Descripcion,
                               textInputAction: TextInputAction.newline,
                               maxLines: 4,
-                              style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w400),
+                              style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w400),
                               autofocus: true,
                               decoration: const InputDecoration(
                                   hintText: 'Escriu',
-                                  labelText: 'Descripció del heroe',
+                                  labelText: 'Descripció',
                                   labelStyle: TextStyle(
                                       color:  Color.fromARGB(255, 237, 141, 57),
                                       fontWeight: FontWeight.w500)),
@@ -274,7 +290,7 @@ class _HomePageState extends State<HomePage> {
                               controller: _imatge,
                               textInputAction: TextInputAction.newline,
                               maxLines: 4,
-                              style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w400),
+                              style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w400),
                               autofocus: true,
                               decoration: const InputDecoration(
                                   hintText: 'Escriu',
@@ -294,7 +310,7 @@ class _HomePageState extends State<HomePage> {
                               controller: _id,
                               textInputAction: TextInputAction.newline,
                               maxLines: 4,
-                              style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w400),
+                              style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w400),
                               autofocus: true,
                               decoration: const InputDecoration(
                                   hintText: 'Escriu',
@@ -320,7 +336,7 @@ class _HomePageState extends State<HomePage> {
                                   size: 22,
                                   color: Color.fromARGB(255, 188, 187, 187),
                                 ),
-                                onPressed: () { //HACER UN INSERT CON TODOS LOS VALORES
+                                onPressed: () { 
                                   final newHeroes = Heroes(
                                       desc: _Descripcion.value.text, //CAMBIAR
                                       name: _nom.value.text,

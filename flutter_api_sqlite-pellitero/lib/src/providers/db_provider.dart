@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:api_to_sqlite/src/models/employee_model.dart';
-import 'package:api_to_sqlite/src/pages/home_page.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -73,9 +72,9 @@ class DBProvider {
 
   Future insertTodo(name,tipus,desc,imatge,id) => insertNewHeroe(name,tipus,desc,imatge,id); 
 
-  insertNewHeroe(String name, String desc, String tipus, String imatge, String id) async {
+  insertNewHeroe(String name, String tipus, String desc, String imatge, String id) async { 
     final db = await database;
-    db?.rawInsert('INSERT INTO Heroes(name, desc, tipus,imatge,id) VALUES("' + name + '", "' + desc + '", "' + tipus + '","'+ imatge+'","'+ id+'")');
+    db?.rawInsert('INSERT INTO Heroes(name, desc, tipus,imatge,id) VALUES("' + name + '", "' + desc + '", "' + tipus + '","'+ imatge +'","'+ id +'")');
   }
 
   deleteById(String id) async {
@@ -91,17 +90,4 @@ class DBProvider {
     db?.rawDelete('DELETE FROM Heroes where id = ?',[id]); 
     
   }
-
-  //Update                     VERIFICAR 
-    Future<int> updateTodo(Heroes heroes) async {
-    final db = await database;
-
-    var result = await db!.rawUpdate('UPDATE Heroes SET name = ?, desc = ?,tipus = ? WHERE id = ?' ,[heroes.name,heroes.desc,heroes.tipus,heroes.id]);
-
-    return result;
-  }
-
-    final _Controller = StreamController<List<Heroes>>.broadcast();
-
-  get controll => _Controller.stream;
 }
